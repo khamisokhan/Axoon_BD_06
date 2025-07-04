@@ -4,6 +4,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 const methodOverride = require("method-override");
 const axios = require("axios");
+const cron = require("node-cron");
 const CatFact = require("./models/catFacts");
 
 app.use(express.static(path.join(__dirname, "public")));
@@ -46,6 +47,15 @@ app.get("/apis", (req, res)=>{
 
 });
 
+cron.schedule("0 * * * *", async () => {  
+    try {
+        const response = await axios.get("https://catfact.ninja/fact");
+        await CatFact.create({ fact: response.data.fact });
+        console.log("Auto refreshed cat fact");
+    } catch (err) {
+        console.log("Auto refresh failed:", err.message);
+    }
+});
 
 app.listen(8080, (req, res)=>{
     console.log("app is listening on port 8080...");
