@@ -18,16 +18,14 @@ btn2.addEventListener("click",async ()=>{
    
     
 });
-
 async function getfacts() {
     try{
-        let res=await axios.get(url);
-        return res.data.fact;
-    }catch(err){
+        let res = await axios.get("/api/catfact");
+        return res.data.fact + " (from " + res.data.source + ")";
+    } catch(err){
         console.log("weak connection", err);
         return "no fact found";
     }
-    
 }
 async function getImage() {
     try{
